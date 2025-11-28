@@ -1,66 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Autoclicker Web Premium</title>
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #1e1e1e;
-        color: #fff;
-        text-align: center;
-        padding: 20px;
-    }
-
-    h1 {
-        color: #4caf50;
-    }
-
-    .box {
-        background: #2c2c2c;
-        padding: 20px;
-        border-radius: 12px;
-        width: 450px;
-        margin: auto;
-        box-shadow: 0 0 20px rgba(0,0,0,0.4);
-    }
-
-    input, button, select {
-        padding: 12px;
-        border-radius: 8px;
-        border: none;
-        margin: 6px;
-        font-size: 16px;
-    }
-
-    button {
-        background: #4caf50;
-        color: #fff;
-        cursor: pointer;
-    }
-
-    button.stop {
-        background: #e53935;
-    }
-
-    #targetPreview {
-        border: 2px dashed #4caf50;
-        padding: 20px;
-        margin: 20px;
-        display: inline-block;
-    }
-
-    .multi-target {
-        background: #3949ab;
-        padding: 10px;
-        border-radius: 8px;
-        color: white;
-        margin: 5px 0;
-    }
-</style>
+    <meta charset="UTF-8">
+    <title>Autoclicker Web Premium</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <h1>Autoclicker Web Premium</h1>
@@ -95,117 +39,12 @@
 
     <h3>Alvos Múltiplos:</h3>
     <div id="multiList"></div>
+
     <button id="addToMulti">Adicionar alvo atual</button>
 
 </div>
 
-<script>
-let running = false;
-let interval = null;
-let clickCount = 0;
-let currentTarget = null;
-let multiTargets = [];
-
-function updateCounter() {
-    document.getElementById("counter").textContent = clickCount;
-}
-
-// Seleção de um elemento alvo
-document.getElementById("chooseElement").onclick = () => {
-    alert("Clique em qualquer elemento da página para selecioná-lo como alvo.");
-
-    document.body.style.cursor = "crosshair";
-
-    function selectElement(e) {
-        e.preventDefault();
-        currentTarget = e.target;
-
-        document.getElementById("targetPreview").textContent =
-            "Elemento selecionado: " + currentTarget.tagName;
-
-        document.body.style.cursor = "default";
-        document.removeEventListener("click", selectElement, true);
-    }
-
-    document.addEventListener("click", selectElement, true);
-};
-
-// Adicionar alvo aos múltiplos
-document.getElementById("addToMulti").onclick = () => {
-    if (!currentTarget)
-        return alert("Selecione um alvo primeiro!");
-
-    multiTargets.push(currentTarget);
-
-    let div = document.createElement("div");
-    div.className = "multi-target";
-    div.textContent = "Alvo: " + currentTarget.tagName;
-
-    document.getElementById("multiList").appendChild(div);
-};
-
-// Clicar no alvo
-function performClick(target) {
-    if (!target) return;
-
-    let type = document.getElementById("clickType").value;
-
-    if (type === "double") {
-        target.click();
-        target.click();
-        clickCount += 2;
-    } else {
-        target.click();
-        clickCount += 1;
-    }
-
-    updateCounter();
-}
-
-document.getElementById("toggle").onclick = toggleAutoClick;
-
-function toggleAutoClick() {
-    running = !running;
-
-    let mode = document.getElementById("clickMode").value;
-    let delay = parseInt(document.getElementById("delay").value);
-
-    if (running) {
-        document.getElementById("toggle").innerText = "Parar";
-        document.getElementById("toggle").classList.add("stop");
-
-        interval = setInterval(() => {
-            if (mode === "cursor") {
-                let el = document.elementFromPoint(cursorX, cursorY);
-                if (el) performClick(el);
-            } else {
-                if (multiTargets.length > 0) {
-                    for (let t of multiTargets) performClick(t);
-                } else {
-                    performClick(currentTarget);
-                }
-            }
-        }, delay);
-
-    } else {
-        document.getElementById("toggle").innerText = "Iniciar Autoclick (ou F6)";
-        document.getElementById("toggle").classList.remove("stop");
-        clearInterval(interval);
-    }
-}
-
-// Hotkey F6
-document.addEventListener("keydown", (e) => {
-    if (e.key === "F6") toggleAutoClick();
-});
-
-// Captura posição do mouse
-let cursorX = 0, cursorY = 0;
-document.addEventListener("mousemove", (e) => {
-    cursorX = e.clientX;
-    cursorY = e.clientY;
-});
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
