@@ -21,7 +21,7 @@
         background: #2c2c2c;
         padding: 20px;
         border-radius: 12px;
-        width: 400px;
+        width: 450px;
         margin: auto;
         box-shadow: 0 0 20px rgba(0,0,0,0.4);
     }
@@ -106,12 +106,11 @@ let clickCount = 0;
 let currentTarget = null;
 let multiTargets = [];
 
-// Atualiza contador
 function updateCounter() {
     document.getElementById("counter").textContent = clickCount;
 }
 
-// Seleção de elemento alvo
+// Seleção de um elemento alvo
 document.getElementById("chooseElement").onclick = () => {
     alert("Clique em qualquer elemento da página para selecioná-lo como alvo.");
 
@@ -121,18 +120,20 @@ document.getElementById("chooseElement").onclick = () => {
         e.preventDefault();
         currentTarget = e.target;
 
-        document.getElementById("targetPreview").textContent = "Elemento selecionado: " + currentTarget.tagName;
-        document.body.style.cursor = "default";
+        document.getElementById("targetPreview").textContent =
+            "Elemento selecionado: " + currentTarget.tagName;
 
+        document.body.style.cursor = "default";
         document.removeEventListener("click", selectElement, true);
     }
 
     document.addEventListener("click", selectElement, true);
 };
 
-// Adicionar aos múltiplos alvos
+// Adicionar alvo aos múltiplos
 document.getElementById("addToMulti").onclick = () => {
-    if (!currentTarget) return alert("Selecione um alvo primeiro!");
+    if (!currentTarget)
+        return alert("Selecione um alvo primeiro!");
 
     multiTargets.push(currentTarget);
 
@@ -143,11 +144,13 @@ document.getElementById("addToMulti").onclick = () => {
     document.getElementById("multiList").appendChild(div);
 };
 
-// Função principal de clicar
+// Clicar no alvo
 function performClick(target) {
     if (!target) return;
 
-    if (document.getElementById("clickType").value === "double") {
+    let type = document.getElementById("clickType").value;
+
+    if (type === "double") {
         target.click();
         target.click();
         clickCount += 2;
@@ -155,24 +158,23 @@ function performClick(target) {
         target.click();
         clickCount += 1;
     }
+
     updateCounter();
 }
 
-// Iniciar / Parar
 document.getElementById("toggle").onclick = toggleAutoClick;
 
 function toggleAutoClick() {
     running = !running;
 
+    let mode = document.getElementById("clickMode").value;
+    let delay = parseInt(document.getElementById("delay").value);
+
     if (running) {
         document.getElementById("toggle").innerText = "Parar";
         document.getElementById("toggle").classList.add("stop");
 
-        let delay = parseInt(document.getElementById("delay").value);
-        let mode = document.getElementById("clickMode").value;
-
         interval = setInterval(() => {
-
             if (mode === "cursor") {
                 let el = document.elementFromPoint(cursorX, cursorY);
                 if (el) performClick(el);
@@ -183,7 +185,6 @@ function toggleAutoClick() {
                     performClick(currentTarget);
                 }
             }
-
         }, delay);
 
     } else {
@@ -200,7 +201,7 @@ document.addEventListener("keydown", (e) => {
 
 // Captura posição do mouse
 let cursorX = 0, cursorY = 0;
-document.addEventListener("mousemove", e => {
+document.addEventListener("mousemove", (e) => {
     cursorX = e.clientX;
     cursorY = e.clientY;
 });
